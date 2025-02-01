@@ -150,6 +150,7 @@ let quizLogic = function () {
                 <header>
                     <h1>You got ${score} out of ${questions.length}</h1>
                 </header>
+                <a href="index.html">Play Again</a>
             </article>
             `;
         }
@@ -186,4 +187,8 @@ startQuizButton.addEventListener('click', () => {
 });
 }
 startQuiz();
+
+let questionTimer = function() {
+
+}
 

@@ -89,7 +89,8 @@ main #quiz form .options button.wrong {
   transition: all ease-in 0.5s;
 }
 
-main .splash-screen article {
+main .splash-screen article,
+main #quiz article {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -128,7 +129,8 @@ main .splash-screen article p {
   font-size: 1rem;
 }
 
-main .splash-screen article a {
+main .splash-screen article a,
+main #quiz article a {
   background-color: var(--accent-color);
   padding: 0.625rem;
   text-align: center;
@@ -214,7 +216,8 @@ main #quiz form .btn button {
 
 @media only screen and (min-width: 1000px) {
   main .splash-screen article a:hover,
-  main #quiz form .btn button:hover {
+  main #quiz form .btn button:hover,
+  main #quiz article a:hover {
     background-color: var(--secondary-color);
     color: var(--primary-color);
   }
