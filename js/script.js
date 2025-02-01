@@ -97,63 +97,63 @@ let quizLogic = function () {
     <button type="button" class="next-btn">Next</button>
     </div>
     `
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let nextQuestionButton = document.querySelector('.next-btn');
     let updateQuestion = function() {
         let questionLabel = document.querySelector('#quiz-question');
-        let optionDiv = document.querySelector('.options');
-        let nextQuestionButton = document.querySelector('.next-btn');
-        let form = document.querySelector('form');
-        let section = document.querySelector('#quiz');
-        let currentQuestionIndex = 0;
-let score = 0;
-    
-       optionDiv.innerHTML = '';
-    
-       let currentQuestion = questions[currentQuestionIndex];
-    
-       questionLabel.textContent = currentQuestion.question;
-    
-       nextQuestionButton.disabled = true;
-    
-       currentQuestion.answers.forEach(answer => {
-        let button = document.createElement('button');
-        button.textContent = answer.text;
-        button.classList.add('option-btn');
-    
-        button.addEventListener('click', () => {
-            if(answer.correct) {
-                button.classList.add('correct');
-                score++;
-            }else {
-                button.classList.add('wrong');
-    
-                document.querySelectorAll('.option-btn').forEach(btn => {
-                    if(questions[currentQuestionIndex].answers.find(a => a.text === btn.textContent).correct) {
-                        btn.classList.add('correct')
-                    }
-                });
-            }
+        let optionDiv = document.querySelector('.options');        
+
+        let currentQuestion = questions[currentQuestionIndex];
+
+        questionLabel.textContent = currentQuestion.question;
+        optionDiv.innerHTML = '';
+        nextQuestionButton.disabled = true;
+
+        currentQuestion.answers.forEach(answer => {
+            let button = document.createElement('button');
+            button.textContent = answer.text;
+            button.classList.add('option-btn');
+
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
+
+                if(answer.correct) {
+                    button.classList.add('correct');
+                    score++;
+                }else {
+                    button.classList.add('wrong');
+
+                    document.querySelectorAll('.option-btn').forEach(btn => {
+                        if(currentQuestion.answers.find(a => a.text === btn.textContent).correct) {
+                            btn.classList.add('correct');
+                        }
+                    });
+                }
+                nextQuestionButton.disabled = false;
+            });
+            optionDiv.appendChild(button);
         });
-    
-        optionDiv.appendChild(button);
-       });
-    
-       nextQuestionButton.addEventListener('click', () => {
+
+       
+    }
+    updateQuestion(); 
+    nextQuestionButton.addEventListener('click', () => {
         if(currentQuestionIndex < questions.length - 1) {
             currentQuestionIndex++;
             updateQuestion();
         }else {
             form.style.display = 'none';
+
             section.innerHTML = `
-                <article class='message'>
-                    <header>
-                        <h1>You got ${score} out of ${questions.length}</h1>
-                    </header>
-                </article>
+                            <article class='message'>
+                <header>
+                    <h1>You got ${score} out of ${questions.length}</h1>
+                </header>
+            </article>
             `;
         }
-       });
-    }
-    updateQuestion();    
+    });   
     }
 
 let startQuiz = function() {
