@@ -1,194 +1,200 @@
-let quizLogic = function () {
-    const questions = [
-        {
-            question: 'In Friends, what is the name of Ross’s second wife?',
-            answers: [
-                {text: 'Carol', correct: false},
-                {text: 'Emily', correct: true},
-                {text: 'Janice', correct: false},
-                {text: 'Susan', correct: false}
-            ]
-        },
-    
-        {
-            question: 'What is the real name of Breaking Bad’s Heisenberg?',
-            answers: [
-                {text: 'Jesse Pinkman', correct: false},
-                {text: 'Walter White', correct: true},
-                {text: 'Saul Goodman', correct: false},
-                {text: 'Hank Schrader', correct: false}
-            ]
-        },
-    
-        {
-            question: 'In Stranger Things, what is Eleven’s favorite food?',
-            answers: [
-                {text: 'Reese’s Pieces', correct: false},
-                {text: 'Eggo Waffles', correct: true},
-                {text: 'Twinkies', correct: false},
-                {text: 'Doritos', correct: false}
-            ]
-        },
-    
-        {
-            question: 'Which TV show follows the lives of Jay, Gloria, Claire, and Phil?',
-            answers: [
-                {text: 'Full House', correct: false},
-                {text: 'How I Met Your Mother', correct: false},
-                {text: 'Modern Family', correct: true},
-                {text: 'The Big Bang Theory', correct: false}
-            ]
-        },
-    
-        {
-            question: 'Which movie features the song “Hakuna Matata”?',
-            answers: [
-                {text: 'Aladdin', correct: false},
-                {text: 'The Lion King', correct: true},
-                {text: 'Tarzan', correct: false},
-                {text: 'Finding Nemo', correct: false}
-            ]
-        },
-    
-        {
-            question: 'Which actor played Jack Dawson in Titanic?',
-            answers: [
-                {text: 'Brad Pitt', correct: false},
-                {text: 'Johnny Depp', correct: false},
-                {text: 'Leonardo DiCaprio', correct: true},
-                {text: 'Tom Cruise', correct: false}
-            ]
-        },
-    
-        {
-            question: 'In The Matrix, what color pill does Neo take?',
-            answers: [
-                {text: 'Red', correct: true},
-                {text: 'Blue', correct: false},
-                {text: 'Green', correct: false},
-                {text: 'Yellow', correct: false}
-            ]
-        },
-    
-        {
-            question: 'Who directed Inception (2010)?',
-            answers: [
-                {text: 'Quentin Tarantino', correct: false},
-                {text: 'Steven Spielberg', correct: false},
-                {text: 'Christopher Nolan', correct: true},
-                {text: 'Martin Scorsese', correct: false}
-            ]
-        }
-    ]
-    let section = document.querySelector('#quiz');
-    let form = document.createElement('form');
+let currentQuestionIndex = 0;
+let score = 0;
+let timer;
+let timerInterval;
 
-    
-    section.appendChild(form);
-    
-    form.innerHTML = `
-    <label id= 'quiz-question'></label>
-
-    <div class= 'options'>
-    <button></button>
-    </div>
-
-    <div class= 'btn'>
-    <button type="button" class="next-btn">Next</button>
-    </div>
-    `
-    let currentQuestionIndex = 0;
-    let score = 0;
-    let nextQuestionButton = document.querySelector('.next-btn');
-    let updateQuestion = function() {
-        let questionLabel = document.querySelector('#quiz-question');
-        let optionDiv = document.querySelector('.options');        
-
-        let currentQuestion = questions[currentQuestionIndex];
-
-        questionLabel.textContent = currentQuestion.question;
-        optionDiv.innerHTML = '';
-        nextQuestionButton.disabled = true;
-
-        currentQuestion.answers.forEach(answer => {
-            let button = document.createElement('button');
-            button.textContent = answer.text;
-            button.classList.add('option-btn');
-
-            button.addEventListener('click', () => {
-                document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
-
-                if(answer.correct) {
-                    button.classList.add('correct');
-                    score++;
-                }else {
-                    button.classList.add('wrong');
-
-                    document.querySelectorAll('.option-btn').forEach(btn => {
-                        if(currentQuestion.answers.find(a => a.text === btn.textContent).correct) {
-                            btn.classList.add('correct');
-                        }
-                    });
-                }
-                nextQuestionButton.disabled = false;
-            });
-            optionDiv.appendChild(button);
-        });
-
-       
-    }
-    updateQuestion(); 
-    nextQuestionButton.addEventListener('click', () => {
-        if(currentQuestionIndex < questions.length - 1) {
-            currentQuestionIndex++;
-            updateQuestion();
-        }else {
-            form.style.display = 'none';
-
-            section.innerHTML = `
-                            <article class='message'>
-                <header>
-                    <h1>You got ${score} out of ${questions.length}</h1>
-                </header>
-                <a href="index.html">Play Again</a>
-            </article>
-            `;
-        }
-    });   
-    }
-
-let startQuiz = function() {
+function startQuiz() {
+    let header = document.querySelector('.main-header');
     let splashScreen = document.querySelector('.splash-screen');
     let quizScreen = document.querySelector('#quiz');
-    let startQuizButton = document.querySelector('.start-quiz');
-    let logo = document.querySelector('.logo');
-    let timer = document.querySelector('.timer');
+    let startQuizBtn = document.querySelector('.quiz-btn');
 
-    window.addEventListener('load', () => {
-        timer.classList.add('hidden');
-      
-        quizScreen.classList.add('hidden');
-        
-        splashScreen.classList.remove('hidden');
-        
-        logo.classList.remove('hidden');
+
+    if(!header || !splashScreen || !quizScreen ||!startQuizBtn) {
+        console.error('Error: One or more required elements are missing.');
+        return;
+    }
+
+
+    header.classList.remove('hidden');
+    splashScreen.classList.remove('hidden');
+    quizScreen.classList.add('hidden');
+
+if(startQuizBtn) {
+    startQuizBtn.addEventListener('click', () => {
+        header.classList.add('hidden');
+        splashScreen.classList.add('hidden');
+        quizScreen.classList.remove('hidden');
+        quizTimer();
         
     });
-    
-startQuizButton.addEventListener('click', () => {
-    timer.classList.remove('hidden');
-    
-    quizScreen.classList.remove('hidden');
-   
-    splashScreen.classList.add('hidden');
-    
-    logo.classList.add('hidden');
-    quizLogic();
-});
+}else {
+    console.warn('Start Quiz button not found.');
+}
+
 }
 startQuiz();
 
-let questionTimer = function() {
+function quizQuestions() {
+    let quizScreen = document.querySelector('#quiz');
+    let question = questions[currentQuestionIndex];
+
+    quizScreen.innerHTML = `
+    <div class= 'timer'> <span class='span-timer'></span></div>
+    <form class= 'quiz-form'>
+    <label class= 'quiz-question'>${question.question}</label>
+
+    <div class = 'options'>
+    ${question.answers.map(answer => `
+    <button class="answer-btn" data-correct="${answer.correct}">${answer.text}</button>
+   `).join('')}
+    </div>
+
+    <div class = 'btn'>
+    <button type="button" class="next-btn">Next</button>
+    </div>
+    </form>
+    `;
+
+    let nextBtn = document.querySelector('.next-btn');
+
+    nextBtn.disabled = true;
+    nextBtn.style.backgroundColor = 'grey';
+    nextBtn.style.color = 'lightgrey';
+
+    quizTimer();
+document.querySelectorAll('.answer-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        const selectedBtn = e.target;
+        const isCorrect = selectedBtn.dataset.correct === 'true';
+       clearInterval(timerInterval);
+        if(isCorrect) {
+            selectedBtn.classList.add('correct');
+            quizScore(true)
+        }else {
+            selectedBtn.classList.add('wrong');
+        }
+
+
+        document.querySelectorAll('.answer-btn').forEach(button => {
+            if(button.dataset.correct === 'true') {
+                button.classList.add('correct')
+            }else if (button !== selectedBtn) {
+               button.classList.add('disabled')
+            }
+            button.disabled = true;
+        });
+                    nextBtn.disabled = false;
+            nextBtn.style.backgroundColor = 'var(--accent-color)';
+            nextBtn.style.color = 'var(--text-color)';
+    });
+});
 
 }
+quizQuestions();
 
+
+function nextButton() {
+    let nextBtn = document.querySelector('.next-btn');
+    let quizScreen = document.querySelector('#quiz');
+    let resultSection = document.createElement('section');
+    resultSection.classList.add('result-screen');
+    let main = document.querySelector('main');
+nextBtn.addEventListener('click', () => {
+    currentQuestionIndex++;
+
+    if(currentQuestionIndex < questions.length) {
+        quizQuestions();
+        nextButton();
+        quizTimer();
+    }else {
+        quizScreen.style.display = 'none';
+      
+        if(!document.querySelector('.result-screen')) {
+            main.appendChild(resultSection);
+        }
+
+        resultSection.innerHTML = `
+        <article class= 'result'>
+        <header>
+        <h1>You got ${score} out of 10</h1>
+        </header>
+    
+        <button class="restart-btn">Play Again</button>
+        </article>
+        `;
+
+        document.querySelector('.restart-btn').addEventListener('click', () => {
+            location.reload();
+        });
+
+        nextBtn.disabled = true;
+    }
+});
+
+
+}
+nextButton();
+
+function quizScore (isCorrect) {
+if(isCorrect) {
+    score++;
+}
+}
+quizScore();
+
+function quizTimer() {
+let timer = 60;
+let timerElement = document.querySelector('.span-timer');
+
+if(!timerElement)return;
+
+timerElement.innerText = timer;
+
+timerInterval = setInterval(function() {
+    timer--;
+   
+
+    if(timer >= 0) {
+        timerElement.innerText = timer;
+    }
+
+    if(timer === 0) {
+        clearInterval(timerInterval);
+        markQuestionAsWrong();
+        revealAnswerAndNext();
+    }
+}, 1000);
+}
+
+function revealAnswerAndNext(){
+document.querySelectorAll('.answer-btn').forEach(button => {
+    if(button.dataset.correct === 'true') {
+        button.classList.add('correct');
+    }else {
+        button.classList.add('disabled');
+    }
+    button.disabled = true;
+});
+
+setTimeout(() => {
+   currentQuestionIndex++;
+
+   if(currentQuestionIndex < questions.length) {
+    quizQuestions();
+   }else {
+    nextButton();
+   }
+}, 3000);
+}
+
+function markQuestionAsWrong() {
+    document.querySelectorAll('.answer-btn').forEach(button => {
+        if(button.dataset.correct === 'true') {
+            button.classList.add('correct');
+        }else {
+            button.classList.add('wrong');
+        }
+        button.disabled = true;
+    });
+}

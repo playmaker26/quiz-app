@@ -1,232 +1,300 @@
 :root {
-  --primary-color: #1a1a40;
-  --secondary-color: #ffc300;
-  --accent-color: #ff5733;
+  --primary-color: #1b1f3b;
+  --secondary-color: #efbf04;
+  --accent-color: #dc143c;
   --text-color: #fff;
-  --logo-font: "Bebas Neue";
-  --text-font: Poppins;
-  --header-font: Montserrat;
-  --options-font: "Nunito";
   --correct: #00ff00;
   --wrong: #ff0000;
+  --padding: 8px;
+  --heading-font: "Bebas Neue";
+  --text-font: Montserrat;
 }
 
 * {
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 body {
   background-color: var(--primary-color);
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-header .logo.hidden {
-  display: none;
-}
-
-.header .logo,
-.header .timer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.header .timer.hidden {
-  display: none;
-}
-
-.header .logo a {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-decoration: none;
-}
-
-.header .logo a span {
-  font-size: 1rem;
-  color: var(--text-color);
-  font-family: var(--logo-font);
-}
-
-.header .logo a img {
-  width: 58px;
-}
-
-.header .timer span {
-  font-family: var(--logo-font);
-  font-size: 1.25rem;
-  color: var(--text-color);
-}
-
 section {
-  width: 100%;
-  min-height: 100vh;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  height: 100vh;
 }
 
-main .splash-screen.hidden {
+.main-header.hidden {
   display: none;
 }
 
-main #quiz form .options button.correct {
-  background-color: var(--correct);
-  font-weight: bold;
-  transition: all ease-in 0.5s;
-}
-
-main #quiz form .options button.wrong {
-  background-color: var(--wrong);
-  font-weight: 500;
-  color: var(--text-color);
-  transition: all ease-in 0.5s;
-}
-
-main .splash-screen article,
-main #quiz article {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  gap: 15px;
-}
-
-main #quiz article {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-
-main .splash-screen article header,
-main #quiz article header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-main .splash-screen article header h1,
-main #quiz article header h1 {
-  font-size: 2rem;
-  color: var(--secondary-color);
-  font-family: var(--header-font);
-  text-align: center;
-}
-
-main .splash-screen article p {
-  text-align: center;
-  font-family: var(--text-font);
-  color: var(--text-color);
-  font-size: 1rem;
-}
-
-main .splash-screen article a,
-main #quiz article a {
-  background-color: var(--accent-color);
-  padding: 0.625rem;
-  text-align: center;
-  color: var(--text-color);
-  font-weight: bold;
-  border-radius: 6px;
-  font-size: 1.125rem;
-  font-family: var(--text-font);
-  text-decoration: none;
-  transition: all ease-in 0.5s;
-}
-
-main #quiz form {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 100%;
-  background-color: var(--text-color);
-  gap: 15px;
-}
-
-main #quiz.hidden {
+.splash-screen.hidden {
   display: none;
 }
 
-main #quiz form label {
+#quiz.hidden {
+  display: none;
+}
+
+main #quiz {
+  flex-direction: column;
+  gap: 16px;
+}
+
+main #quiz .timer span {
+  font-size: 1.1875rem;
+  font-family: var(--text-font);
+  color: var(--text-color);
+  font-weight: bold;
+  text-align: center;
+}
+
+main #quiz label {
   font-size: 1rem;
   font-family: var(--text-font);
-  font-weight: 500;
   color: var(--primary-color);
+  padding: var(--padding);
+  font-weight: bold;
 }
 
-main #quiz form .options {
-  width: 100%;
+main #quiz .quiz-form .options {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 15px;
+  gap: 16px;
 }
 
-main #quiz form .options button {
-  align-self: flex-start;
-  width: 100%;
-  border-radius: 6px;
-  border: 1px solid #000;
+main #quiz .quiz-form .options button {
+  font-size: 0.8125rem;
+  font-weight: 500;
   text-align: left;
-  font-size: 0.75rem;
-  font-family: var(--options-font);
+  font-family: var(--text-font);
   color: var(--primary-color);
-  background-color: var(--text-color);
-  padding: 5px;
-  transition: all ease-in 0.5s;
+  width: 100%;
+  padding: var(--padding);
+  border: 1px solid #0000;
+  background-color: transparent;
+  transition: all ease-in 0.3s;
 }
 
-main #quiz form .btn {
+main #quiz .quiz-form .options button.disabled {
+  color: lightgrey;
+}
+
+main #quiz .quiz-form .options button.correct {
+  border: 1px solid var(--correct);
+  font-weight: bold;
+  color: var(--correct);
+}
+
+main #quiz .quiz-form .options button.wrong {
+  border: 1px solid var(--wrong);
+  font-weight: bold;
+  color: var(--wrong);
+}
+
+main #quiz .quiz-form .btn {
   display: flex;
   align-items: center;
-  width: 100%;
 }
 
-main #quiz form .btn button {
+main #quiz .quiz-form .btn button {
   align-self: flex-start;
-  padding: 5px;
-  font-family: var(--text-font);
+  padding: var(--padding);
   background-color: var(--accent-color);
-  font-size: 1.125rem;
+  font-size: 1rem;
+  font-family: var(--text-font);
   font-weight: bold;
+  text-align: center;
   color: var(--text-color);
   border: none;
-  text-align: center;
-  transition: all ease-in 0.5s;
 }
 
 @media only screen and (max-width: 767px) {
+  .main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--primary-color);
+  }
+
+  .main-header div,
+  .main-header div a,
+  .main-header div a img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+  }
+
+  main .splash-screen article,
+  main .result-screen .result {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+  }
+
+  main .splash-screen article header,
+  main .result-screen .result header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--padding);
+  }
+
+  main .splash-screen article header h1,
+  main .result-screen .result header h1 {
+    font-size: 2.5rem;
+    color: var(--secondary-color);
+    font-weight: 800;
+    text-align: center;
+    font-family: var(--heading-font);
+  }
+
+  main .splash-screen article p {
+    font-size: 1rem;
+    color: var(--text-color);
+    font-family: var(--text-font);
+    line-height: 25px;
+    padding: var(--padding);
+    text-align: center;
+  }
+
+  main .splash-screen article a,
+  main .result-screen .result button {
+    text-decoration: none;
+    align-self: flex-start;
+    margin: 0 auto;
+    padding: var(--padding);
+    color: var(--text-color);
+    font-weight: bold;
+    background-color: var(--accent-color);
+    text-align: center;
+    font-family: var(--text-font);
+    border: none;
+    appearance: none;
+    outline: none;
+  }
+
+  main #quiz .quiz-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background-color: var(--text-color);
+  }
+
+  main #quiz .timer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 @media only screen and (min-width: 768px) {
-  main #quiz form {
-    width: 400px;
+  .main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--primary-color);
+  }
+
+  .main-header div,
+  .main-header div a,
+  .main-header div a img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+  }
+
+  main .splash-screen article,
+  main .result-screen .result {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 16px;
+    width: 640px;
+  }
+
+  main .splash-screen article header,
+  main .result-screen .result header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--padding);
+  }
+
+  main .splash-screen article header h1,
+  main .result-screen .result header h1 {
+    font-size: 3rem;
+    color: var(--secondary-color);
+    font-weight: 800;
+    text-align: center;
+    font-family: var(--heading-font);
+  }
+
+  main .splash-screen article p {
+    font-size: 1rem;
+    color: var(--text-color);
+    font-family: var(--text-font);
+    line-height: 25px;
+    padding: var(--padding);
+    text-align: center;
+  }
+
+  main .splash-screen article a,
+  main .result-screen .result button {
+    text-decoration: none;
+    align-self: flex-start;
+    margin: 0 auto;
+    padding: var(--padding);
+    color: var(--text-color);
+    font-weight: bold;
+    background-color: var(--accent-color);
+    text-align: center;
+    font-family: var(--text-font);
+    border: none;
+    appearance: none;
+    outline: none;
+  }
+
+  main #quiz .quiz-form {
+    width: 640px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background-color: var(--text-color);
+  }
+
+  main #quiz .timer {
+    width: 640px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 
 @media only screen and (min-width: 1000px) {
-  main .splash-screen article a:hover,
-  main #quiz form .btn button:hover,
-  main #quiz article a:hover {
-    background-color: var(--secondary-color);
-    color: var(--primary-color);
+  main .splash-screen article,
+  main .result-screen .result {
+    width: 720px;
   }
 
-  main #quiz form {
-    width: 632px;
+  main #quiz .quiz-form {
+    width: 720px;
   }
 
-  main #quiz form .options button:hover {
+  main #quiz .timer {
+    width: 720px;
+  }
+
+  main #quiz .quiz-form .options button:hover {
     background-color: var(--secondary-color);
     font-weight: bold;
   }
