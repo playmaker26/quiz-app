@@ -2,7 +2,7 @@ let currentQuestionIndex = 0;
 let score = 0;
 let timer;
 let timerInterval;
-
+let timerRunOut = 0;
 function startQuiz() {
     let header = document.querySelector('.main-header');
     let splashScreen = document.querySelector('.splash-screen');
@@ -25,8 +25,8 @@ if(startQuizBtn) {
         header.classList.add('hidden');
         splashScreen.classList.add('hidden');
         quizScreen.classList.remove('hidden');
+        quizQuestions();
         quizTimer();
-        
     });
 }else {
     console.warn('Start Quiz button not found.');
@@ -38,7 +38,6 @@ startQuiz();
 function quizQuestions() {
     let quizScreen = document.querySelector('#quiz');
     let question = questions[currentQuestionIndex];
-
     quizScreen.innerHTML = `
     <div class= 'timer'> <span class='span-timer'></span></div>
     <form class= 'quiz-form'>
@@ -56,85 +55,92 @@ function quizQuestions() {
     </form>
     `;
 
-    let nextBtn = document.querySelector('.next-btn');
-
-    nextBtn.disabled = true;
-    nextBtn.style.backgroundColor = 'grey';
-    nextBtn.style.color = 'lightgrey';
-
-    quizTimer();
-document.querySelectorAll('.answer-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        const selectedBtn = e.target;
-        const isCorrect = selectedBtn.dataset.correct === 'true';
-       clearInterval(timerInterval);
-        if(isCorrect) {
-            selectedBtn.classList.add('correct');
-            quizScore(true)
-        }else {
-            selectedBtn.classList.add('wrong');
-        }
-
-
-        document.querySelectorAll('.answer-btn').forEach(button => {
-            if(button.dataset.correct === 'true') {
-                button.classList.add('correct')
-            }else if (button !== selectedBtn) {
-               button.classList.add('disabled')
-            }
-            button.disabled = true;
-        });
-                    nextBtn.disabled = false;
-            nextBtn.style.backgroundColor = 'var(--accent-color)';
-            nextBtn.style.color = 'var(--text-color)';
-    });
-});
-
+selectedAnswer();
+nextButton();
+quizTimer();
 }
 quizQuestions();
 
 
+function selectedAnswer() {
+let nextBtn = document.querySelector('.next-btn');
+
+nextBtn.disabled = true;
+nextBtn.style.backgroundColor = 'grey';
+nextBtn.style.color = 'lightgrey';
+
+document.querySelectorAll('.answer-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        const selectedBtn = e.target;
+        const isCorrect = selectedBtn.dataset.correct === 'true';
+        clearInterval(timerInterval);
+        if(isCorrect) {
+            selectedBtn.classList.add('correct');
+            quizScore(true);
+        }else{
+            selectedBtn.classList.add('wrong');
+        }
+
+        document.querySelectorAll('.answer-btn').forEach(button => {
+            button.disabled = true;
+
+            if(button.dataset.correct === 'true') {
+                button.classList.add('correct');
+            }else {
+                button.classList.add('disabled');
+            }
+        });
+
+        let updatedNextBtn = document.querySelector('.next-btn');
+        updatedNextBtn.disabled = false;
+        updatedNextBtn.style.backgroundColor = 'var(--accent-color)';
+        updatedNextBtn.style.color = 'var(--text-color)';
+
+        nextButton();
+    });
+});
+}
+
 function nextButton() {
     let nextBtn = document.querySelector('.next-btn');
-    let quizScreen = document.querySelector('#quiz');
-    let resultSection = document.createElement('section');
-    resultSection.classList.add('result-screen');
-    let main = document.querySelector('main');
-nextBtn.addEventListener('click', () => {
+
+ let newBtn = nextBtn.cloneNode(true);
+ nextBtn.replaceWith(newBtn);
+
+ newBtn.addEventListener('click', () => {
     currentQuestionIndex++;
 
     if(currentQuestionIndex < questions.length) {
         quizQuestions();
-        nextButton();
-        quizTimer();
     }else {
-        quizScreen.style.display = 'none';
-      
-        if(!document.querySelector('.result-screen')) {
-            main.appendChild(resultSection);
-        }
-
-        resultSection.innerHTML = `
-        <article class= 'result'>
-        <header>
-        <h1>You got ${score} out of 10</h1>
-        </header>
-    
-        <button class="restart-btn">Play Again</button>
-        </article>
-        `;
-
-        document.querySelector('.restart-btn').addEventListener('click', () => {
-            location.reload();
-        });
-
-        nextBtn.disabled = true;
+        resultScreen();
     }
-});
-
-
+ });
 }
-nextButton();
+
+function resultScreen() {
+    let quizScreen = document.querySelector('#quiz');
+    let resultSection = document.createElement('section');
+    resultSection.classList.add('result-screen');
+    let main = document.querySelector('main');
+
+    main.appendChild(resultSection);
+    quizScreen.style.display = 'none';
+
+    resultSection.innerHTML = `<article class='result'>
+                    <header>
+                        <h1>You got ${score} out of 10</h1>
+                    </header>
+                    <button class="restart-btn">Play Again</button>
+                </article>`
+
+    ;
+
+    document.querySelector('.restart-btn').addEventListener('click', () => {
+        location.reload();
+    });
+}
+
 
 function quizScore (isCorrect) {
 if(isCorrect) {
@@ -145,56 +151,48 @@ quizScore();
 
 function quizTimer() {
 let timer = 60;
-let timerElement = document.querySelector('.span-timer');
+let timerSpan = document.querySelector('.span-timer');
 
-if(!timerElement)return;
+if(timerInterval)clearInterval(timerInterval);
 
-timerElement.innerText = timer;
+    timerInterval = setInterval(() =>  {
+        let minutes = Math.floor(timer / 60);
+        let seconds = timer % 60;
+        timerSpan.textContent = `${minutes} : ${seconds < 10 ? '0' : ''}  ${seconds}`;
+        timer--;
 
-timerInterval = setInterval(function() {
-    timer--;
-   
-
-    if(timer >= 0) {
-        timerElement.innerText = timer;
-    }
-
-    if(timer === 0) {
-        clearInterval(timerInterval);
-        markQuestionAsWrong();
-        revealAnswerAndNext();
-    }
-}, 1000);
+        if(timer < 0) {
+            clearInterval(timerInterval);
+            timerRunOut++;
+            handleTimeOut();
+        }
+    }, 1000);
 }
 
-function revealAnswerAndNext(){
-document.querySelectorAll('.answer-btn').forEach(button => {
-    if(button.dataset.correct === 'true') {
-        button.classList.add('correct');
-    }else {
-        button.classList.add('disabled');
-    }
-    button.disabled = true;
-});
+function handleTimeOut() {
+    let nextBtn = document.querySelector('.next-btn');
 
-setTimeout(() => {
-   currentQuestionIndex++;
-
-   if(currentQuestionIndex < questions.length) {
-    quizQuestions();
-   }else {
-    nextButton();
-   }
-}, 3000);
-}
-
-function markQuestionAsWrong() {
     document.querySelectorAll('.answer-btn').forEach(button => {
+        button.disabled = true;
+
         if(button.dataset.correct === 'true') {
             button.classList.add('correct');
         }else {
-            button.classList.add('wrong');
+            button.classList.add('disabled');
         }
-        button.disabled = true;
     });
+
+    timerRunOut++;
+
+    setTimeout(() => {
+        currentQuestionIndex++;
+
+        if(currentQuestionIndex < questions.length) {
+            quizQuestions();
+        }else {
+            resultScreen();
+        }
+    }, 3000);
 }
+
+
